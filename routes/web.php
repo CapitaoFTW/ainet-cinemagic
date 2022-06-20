@@ -26,7 +26,7 @@ use App\Http\Controllers\DashboardController;
 Route::get("/", [HomeController::class, 'index'])->name('home');
 Route::get('filmes', [FilmeController::class, 'index'])->name('filmes.index');
 Route::get('filmes/{filme}', [FilmeController::class, 'show'])->name('filmes.show');
-Route::get('perfil', [UserController::class, 'index'])->name('users.index');
+Route::get('perfil', [ClienteController::class, 'index'])->name('clientes.perfil');
 
 Route::middleware('auth', 'verified')->prefix('admin')->name('admin.')->group(function () {
     // dashboard

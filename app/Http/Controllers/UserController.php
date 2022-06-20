@@ -97,11 +97,4 @@ class UserController extends Controller {
                 ->with('alert-type', 'success');
         }
     }*/
-
-    public function index() {
-        $user = Auth::user();
-
-        return view('users.index')
-            ->with('user', $user);
-    }
 }

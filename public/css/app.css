@@ -631,7 +631,7 @@ progress {
 .container-sm {
   width: 100%;
   padding-right: var(--bs-gutter-x, 1rem);
-  padding-left: var(--bs-gutter-x, 8rem);
+  padding-left: var(--bs-gutter-x, 1rem);
   margin-right: auto;
   margin-left: auto;
 }
@@ -3806,7 +3806,7 @@ textarea.form-control-lg {
   justify-content: space-between;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  padding-right: 7rem;
+  padding-right: 1rem;
 }
 .navbar > .container,
 .navbar > .container-fluid,

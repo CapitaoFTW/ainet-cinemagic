@@ -27,4 +27,15 @@ class ClienteController extends Controller {
             ->withGeneros($listaGeneros)
             ->withCartaz($cartaz_url);
     }*/
+
+    public function index() {
+        $user = Auth::user();
+        if ($user->tipo == 'C')
+            $cliente = Cliente::select('*')->where('id', $user->id)->first();
+        else
+            return view('home');
+
+        return view('clientes.perfil')
+            ->with('cliente', $cliente);
+    }
 }
