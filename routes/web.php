@@ -27,6 +27,7 @@ Route::get("/", [HomeController::class, 'index'])->name('home');
 Route::get('filmes', [FilmeController::class, 'index'])->name('filmes.index');
 Route::get('filmes/{filme}', [FilmeController::class, 'show'])->name('filmes.show');
 Route::get('perfil', [ClienteController::class, 'index'])->name('clientes.perfil');
+Route::put('perfil/{cliente}', [ClienteController::class, 'update'])->name('clientes.update');
 
 Route::middleware('auth', 'verified')->prefix('admin')->name('admin.')->group(function () {
     // dashboard

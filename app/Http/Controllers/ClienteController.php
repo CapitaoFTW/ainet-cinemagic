@@ -38,4 +38,37 @@ class ClienteController extends Controller {
         return view('clientes.perfil')
             ->with('cliente', $cliente);
     }
+
+    public function update(ClientePost $request)
+    {
+        $validated = $request->validated();
+
+        $cliente = Cliente::find(Auth::user()->id);
+
+        if ($request->name)
+            $cliente->user->name = $validated['name'];
+
+        if ($request->email) {
+            $cliente->user->email = $validated['email'];
+           // $user->sendEmailVerificationNotification();
+            //$user->email_verified_at = null;
+        }
+
+        if ($request->nif)
+            $cliente->nif = $validated['nif'];
+
+        if ($request->tipo_pagamento)
+            $cliente->tipo_pagamento = $validated['tipo_pagamento'];
+
+        /*if ($request->hasFile('profile_pic')) {
+            $user->foto_url ? Storage::delete('public/fotos/' . $user->foto_url) : null;
+            $path = $request->profile_pic->store('public/fotos');
+            $user->foto_url = basename($path);
+        }*/
+
+        // $user->password = Hash::make($request->password);
+        $cliente->save();
+
+        return view('clientes.perfil');
+    }
 }

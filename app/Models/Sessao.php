@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sessao extends Model
 {
     use HasFactory;
-	
+
 	protected $table = "Sessoes";
 
     protected $fillable = [
@@ -16,15 +16,15 @@ class Sessao extends Model
         'sala_id',
     ];
 
-    public function Bilhete() {
-        return $this -> hasMany(Bilhete:: class, 'sessao_id','id');
+    public function bilhetes() {
+        return $this -> hasMany(Bilhete:: class, 'sessao_id');
     }
 
-    public function Filme() {
-        return $this -> hasOne(Filme:: class, 'id','filme_id');
+    public function filme() {
+        return $this -> belongsTo(Filme:: class, 'filme_id');
     }
 
-    public function Sala() {
-        return $this -> hasOne(Sala:: class, 'id','sala_id');
+    public function sala() {
+        return $this -> belongsTo(Sala:: class, 'sala_id');
     }
 }

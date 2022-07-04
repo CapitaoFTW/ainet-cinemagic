@@ -9,6 +9,8 @@ class Recibo extends Model
 {
     use HasFactory;
 
+    protected $dates = ['data', 'updated_at', 'created_at'];
+
     protected $fillable = [
         'nif',
         'preco_total_sem_iva',
@@ -19,11 +21,11 @@ class Recibo extends Model
         'ref_pagamento',
     ];
 
-    public function Cliente() {
-        return $this -> hasOne(Cliente:: class);
+    public function cliente() {
+        return $this -> belongsTo(Cliente:: class, 'cliente_id');
     }
 
-    public function Bilhete() {
-        return $this -> hasMany(Bilhete:: class);
+    public function bilhetes() {
+        return $this -> hasMany(Bilhete:: class, 'recibo_id');
     }
 }

@@ -4,7 +4,9 @@
 
 @section('content')
     <div class="container w-50">
-        <form class="perfil" method="POST">
+        <form method="POST" action="{{ route('clientes.update') }}" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
             <div class="row text-center justify-content-center" style="padding-bottom: 3rem">
                 @if ($cliente->user->foto_url != '')
                     <div class="row text-center justify-content-center" style="padding-bottom: 3rem">
@@ -80,7 +82,8 @@
             </div>
             <div class="row text-center align-items-center" style="padding-top: 3rem">
                 <div class="col-sm-12">
-                    <button type="submit" class="btn btn-success btn-lg" name="submit" form="form_change_personal_info">{{ __('Aplicar') }}</button>
+                    <button type="submit" class="btn btn-success btn-lg" name="submit"
+                        form="form_change_personal_info">{{ __('Aplicar') }}</button>
                 </div>
             </div>
         </form>

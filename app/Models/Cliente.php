@@ -19,15 +19,15 @@ class Cliente extends Model
         'ref_pagamento',
     ];
 
-    public function User() {
-        return $this -> belongsTo(User:: class,'id','id');
+    public function user() {
+        return $this -> belongsTo(User:: class,'id');
     }
 
-    public function Recibo() {
-        return $this -> hasMany(Recibo:: class);
+    public function recibos() {
+        return $this -> hasMany(Recibo:: class, 'cliente_id');
     }
 
-    public function Bilhete() {
-        return $this -> hasMany(Bilhete:: class);
+    public function bilhetes() {
+        return $this -> hasMany(Bilhete:: class, 'cliente_id');
     }
 }

@@ -10,7 +10,7 @@ use SoftDeletes;
 class Genero extends Model
 {
     use HasFactory;
-	
+
 	protected $primaryKey = "code";
 	protected $keyType = "string";
 	public $incrementing = false;
@@ -19,4 +19,9 @@ class Genero extends Model
 	protected $fillable = [
         'nome',
     ];
+
+    public function filmes()
+    {
+        return $this->hasMany(Filme::class, 'genero_code');
+    }
 }

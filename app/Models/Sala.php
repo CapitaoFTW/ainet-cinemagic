@@ -16,4 +16,14 @@ class Sala extends Model
         'nome',
     ];
 
+    public function sessoes()
+    {
+        return $this->hasMany(Sessao::class, 'sala_id');
+    }
+
+    public function lugares()
+    {
+        return $this->hasMany(Lugar::class, 'sala_id');
+    }
+
 }
