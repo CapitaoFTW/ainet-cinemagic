@@ -62,4 +62,16 @@ class User extends Authenticatable
     public function Cliente() {
         return $this -> hasOne(Cliente:: class,'id','id');
     }
+
+    public function isAdmin() {
+        return $this->tipo == 'A';
+    }
+
+    public function isFuncionario() {
+        return $this->tipo == 'F';
+    }
+
+    public function isCliente() {
+        return $this->tipo == 'C';
+    }
 }

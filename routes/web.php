@@ -25,9 +25,19 @@ use App\Http\Controllers\DashboardController;
 //Rotas de frontend
 Route::get("/", [HomeController::class, 'index'])->name('home');
 Route::get('filmes', [FilmeController::class, 'index'])->name('filmes.index');
-Route::get('filmes/{filme}', [FilmeController::class, 'show'])->name('filmes.show');
-Route::get('perfil', [ClienteController::class, 'index'])->name('clientes.perfil');
-Route::put('perfil/{cliente}', [ClienteController::class, 'update'])->name('clientes.update');
+Route::get('filmes/{filme}', [FilmeController::class, 'show'])->name('filme.show');
+Route::get('perfil', [ClienteController::class, 'index'])->name('cliente.perfil');
+Route::post('perfil', [ClienteController::class, 'update'])->name('cliente.perfil.update');
+
+Route::middleware('notFarmaceutico')->group(function () {
+    // rotas relacionadas com a gestão do carrinho
+    Route::get('carrinho', [CarrinhoController::class, 'index'])->name('carrinho.index');
+    //Route::post('carrinho/medicamentos/{medicamento}', [CarrinhoController::class, 'store_medicamento'])->name('carrinho.store_medicamento');
+    //Route::put('carrinho/medicamentos/{medicamento}', [CarrinhoController::class, 'update_medicamento'])->name('carrinho.update_medicamento');
+    //Route::delete('carrinho/medicamentos/{medicamento}', [CarrinhoController::class, 'destroy_medicamento'])->name('carrinho.destroy_medicamento');
+    //Route::post('carrinho', [CarrinhoController::class, 'store'])->name('carrinho.store');
+    //Route::delete('carrinho', [CarrinhoController::class, 'destroy'])->name('carrinho.destroy');
+});
 
 Route::middleware('auth', 'verified')->prefix('admin')->name('admin.')->group(function () {
     // dashboard
@@ -91,7 +101,17 @@ Route::middleware('auth', 'verified')->prefix('admin')->name('admin.')->group(fu
         ->middleware('can:delete,cliente');
     Route::delete('clientes/{cliente}/foto_url', [ClienteController::class, 'destroy_foto'])->name('clientes.foto_url.destroy')
         ->middleware('can:update,cliente');*/
-
 });
+
+// rotas protegidas (só para admins)
+/*Route::middleware(['isAdmin'])->group(function () {
+
+    // admin dashboard main page
+    Route::get('/', [DashboardController::class, 'index'])->name('index');
+
+    // rotas para gerir users no dashboard admin
+    Route::resource('users', UserController::class)->except('show', 'update');
+    Route::patch('users/{user}/update_state', [UserController::class, 'updateState'])->name('users.update_state');
+});*/
 
 Auth::routes();

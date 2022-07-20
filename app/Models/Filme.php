@@ -20,7 +20,7 @@ class Filme extends Model
 
     public function sessoes()
     {
-        return $this->hasMany(Sessao::class, 'filme_id');
+        return $this->hasMany(Sessao::class, 'filme_id', 'id');
     }
 
     public function genero()

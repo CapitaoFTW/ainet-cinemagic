@@ -14,6 +14,8 @@ class Sessao extends Model
     protected $fillable = [
         'filme_id',
         'sala_id',
+        'data',
+        'horario_inicio',
     ];
 
     public function bilhetes() {

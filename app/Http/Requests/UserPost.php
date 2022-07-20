@@ -14,7 +14,7 @@ class ClientePost extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('update', $this->user);
     }
 
     /**
@@ -24,19 +24,15 @@ class ClientePost extends FormRequest
      */
     public function rules()
     {
+
         return [
-            'id' =>                   'required|unique:users,id,'.$this->id.',id',
             'name' =>                   'required',
             'email' => [
                 'required',
                 'email',
                 Rule::unique('users', 'email')->ignore($this->id),
             ],
-            'password' =>               'sometimes|min:8|confirmed',//|different:old_password',
-            'password_confirmation' =>  'required|same:password',
-            'remember_token' =>         'nullable|string|max:100',
             'tipo' =>                   'required|in:C,F,A',
-            'bloqueado' =>              'required|digits:1',
             'foto_url' =>               'nullable|url'
         ];
     }
