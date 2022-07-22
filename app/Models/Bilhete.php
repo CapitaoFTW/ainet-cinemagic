@@ -42,4 +42,9 @@ class Bilhete extends Model
     {
         return $this->belongsTo(Lugar::class, 'lugar_id');
     }
+
+    public function isUsado()
+    {
+        return $this->estado == 'usado';
+    }
 }

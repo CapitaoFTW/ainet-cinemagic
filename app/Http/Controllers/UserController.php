@@ -6,10 +6,31 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UserPost;
+use App\Rules\MatchOldPassword;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
+    public function password()
+    {
+        return view('auth.passwords.reset');
+    }
+
+    public function store_password(Request $request)
+    {
+        $request->validate([
+            'old_password' => ['required', new MatchOldPassword],
+            'password' => ['required'],
+            'password-confirm' => ['same:password'],
+        ]);
+
+        User::find(auth()->user()->id)->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->route('filmes.index')
+            ->with('alert-msg', 'A senha foi alterada com sucesso')
+            ->with('alert-type', 'success');
+    }
     /*public function edit() {
         $user = Auth::user();
         return view('user.edit')->withUser($user);

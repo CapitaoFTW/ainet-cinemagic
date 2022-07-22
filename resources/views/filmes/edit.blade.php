@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title','Alterar Filme' )
 @section('content')
     <form method="POST" action="{{route('admin.filmes.update', ['filme' => $filme]) }}" class="form-group">

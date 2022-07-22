@@ -1,0 +1,11 @@
+a{ text-decoration: none !important}
+
+/* Flash Messages style */
+.alert{
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-control{
+    appearance: button;
+}

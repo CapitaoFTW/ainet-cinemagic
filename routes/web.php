@@ -2,11 +2,14 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FilmeController;
+use App\Http\Controllers\SessaoController;
+use App\Http\Controllers\CarrinhoController;
+use App\Http\Controllers\ReciboController;
+use App\Http\Controllers\BilheteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GeneroController;
 use App\Http\Controllers\SalaController;
-use App\Http\Controllers\FilmeController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DashboardController;
 
@@ -23,25 +26,53 @@ use App\Http\Controllers\DashboardController;
 */
 
 //Rotas de frontend
-Route::get("/", [HomeController::class, 'index'])->name('home');
-Route::get('filmes', [FilmeController::class, 'index'])->name('filmes.index');
+Route::get("/", [FilmeController::class, 'index'])->name('filmes.index');
 Route::get('filmes/{filme}', [FilmeController::class, 'show'])->name('filme.show');
 Route::get('perfil', [ClienteController::class, 'index'])->name('cliente.perfil');
 Route::post('perfil', [ClienteController::class, 'update'])->name('cliente.perfil.update');
+Route::get('sessoes/{sessao}', [SessaoController::class, 'comprar_bilhete'])->name('sessao.comprar_bilhete');
 
-Route::middleware('notFarmaceutico')->group(function () {
+Route::middleware('notFuncionario')->group(function () {
     // rotas relacionadas com a gestão do carrinho
     Route::get('carrinho', [CarrinhoController::class, 'index'])->name('carrinho.index');
-    //Route::post('carrinho/medicamentos/{medicamento}', [CarrinhoController::class, 'store_medicamento'])->name('carrinho.store_medicamento');
-    //Route::put('carrinho/medicamentos/{medicamento}', [CarrinhoController::class, 'update_medicamento'])->name('carrinho.update_medicamento');
-    //Route::delete('carrinho/medicamentos/{medicamento}', [CarrinhoController::class, 'destroy_medicamento'])->name('carrinho.destroy_medicamento');
-    //Route::post('carrinho', [CarrinhoController::class, 'store'])->name('carrinho.store');
-    //Route::delete('carrinho', [CarrinhoController::class, 'destroy'])->name('carrinho.destroy');
+    Route::put('carrinho/{sessao}', [CarrinhoController::class, 'update_bilhete'])->name('carrinho.update_bilhete');
+    Route::delete('carrinho/{row}', [CarrinhoController::class, 'destroy_bilhete'])->name('carrinho.destroy_bilhete');
+    Route::post('carrinho/{sessao}/{lugar}', [CarrinhoController::class, 'store_bilhete'])->name('carrinho.store_bilhete');
+    Route::delete('carrinho', [CarrinhoController::class, 'destroy'])->name('carrinho.destroy');
 });
 
-Route::middleware('auth', 'verified')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth')->group(function () {
+    Route::get('users/password', [UserController::class, 'password'])->name('password');
+    Route::put('users/password', [UserController::class, 'store_password'])->name('change.password');
+});
+
+Route::middleware('cliente')->group(function () {
+    // rotas relacionadas com a gestão dos recibos
+    Route::post('recibos/create', [ReciboController::class, 'create'])->name('recibos.create');
+    Route::get('recibos/{recibo}', [ReciboController::class, 'show'])->name('recibo.show');
+    Route::get('recibos', [ReciboController::class, 'index'])->name('recibos.index');
+
+    // rotas relacionadas com a gestão dos bilhetes
+    Route::get('bilhetes', [BilheteController::class, 'index'])->name('bilhetes.index');
+});
+
+Route::middleware('auth', 'verified')->prefix('painel')->name('admin.')->group(function () {
     // dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    // filmes
+    /*Route::get('filmes', [FilmeController::class, 'admin_index'])->name('filmes')
+        ->middleware('can:viewAny,App\Models\Filme');
+    Route::get('filmes/{filme}/edit', [FilmeController::class, 'edit'])->name('filmes.edit')
+        ->middleware('can:view,filme');
+    Route::get('filmes/create', [FilmeController::class, 'create'])->name('filmes.create')
+        ->middleware('can:create,App\Models\Filme');
+    Route::post('filmes', [FilmeController::class, 'store'])->name('filmes.store')
+        ->middleware('can:create,App\Models\Filme');
+    Route::put('filmes/{filme}', [FilmeController::class, 'update'])->name('filmes.update')
+        ->middleware('can:update,filme');
+    Route::delete('filmes/{filme}', [FilmeController::class, 'destroy'])->name('filmes.destroy')
+        ->middleware('can:delete,filme');*/
 
     // administração de géneros
     /*Route::get('generos', [GeneroController::class, 'admin'])->name('generos')
@@ -71,20 +102,6 @@ Route::middleware('auth', 'verified')->prefix('admin')->name('admin.')->group(fu
     Route::delete('salas/{sala}', [SalaController::class, 'destroy'])->name('salas.destroy')
         ->middleware('can:delete,sala');
 
-    // filmes
-    Route::get('filmes', [FilmeController::class, 'admin_index'])->name('filmes')
-        ->middleware('can:viewAny,App\Models\Filme');
-    Route::get('filmes/{filme}/edit', [FilmeController::class, 'edit'])->name('filmes.edit')
-        ->middleware('can:view,filme');
-    Route::get('filmes/create', [FilmeController::class, 'create'])->name('filmes.create')
-        ->middleware('can:create,App\Models\Filme');
-    Route::post('filmes', [FilmeController::class, 'store'])->name('filmes.store')
-        ->middleware('can:create,App\Models\Filme');
-    Route::put('filmes/{filme}', [FilmeController::class, 'update'])->name('filmes.update')
-        ->middleware('can:update,filme');
-    Route::delete('filmes/{filme}', [FilmeController::class, 'destroy'])->name('filmes.destroy')
-        ->middleware('can:delete,filme');
-
     // administração de clientes
     Route::get('perfil', [ClienteController::class, 'index'])->name('perfil');
     Route::get('clientes', [ClienteController::class, 'admin'])->name('clientes')
@@ -104,7 +121,7 @@ Route::middleware('auth', 'verified')->prefix('admin')->name('admin.')->group(fu
 });
 
 // rotas protegidas (só para admins)
-/*Route::middleware(['isAdmin'])->group(function () {
+/*Route::middleware(['admin'])->group(function () {
 
     // admin dashboard main page
     Route::get('/', [DashboardController::class, 'index'])->name('index');

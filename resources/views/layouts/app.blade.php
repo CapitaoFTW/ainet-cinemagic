@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'CineMagic') }}</title>
+    <title>@yield('title')</title>
     <link rel="cinemagic-icon" type="favicon" href="public/favicon.ico">
 
     <!-- Scripts -->
@@ -17,6 +17,7 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/all.css') }}">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -48,15 +49,25 @@
                                     <b><a class="nav-link"
                                             href="{{ route('carrinho.index') }}">{{ __('CARRINHO') }}</a></b>
                                 </li>
+                                <li class="nav-item" style="padding-left: 25px">
+                                    <b><a class="nav-link"
+                                            href="{{ route('bilhetes.index') }}">{{ __('BILHETES') }}</a></b>
+                                </li>
+                                <li class="nav-item" style="padding-left: 25px">
+                                    <b><a class="nav-link" href="{{ route('recibos.index') }}">{{ __('RECIBOS') }}</a></b>
+                                </li>
+                            @else
+                                <li class="nav-item" style="padding-left: 25px">
+                                    <b><a class="nav-link"
+                                            href="{{ route('admin.dashboard') }}">{{ __('PAINEL DE CONTROLO') }}</a></b>
+                                </li>
                             @endif
                         @else
                             <li class="nav-item" style="padding-left: 25px">
-                                <b><a class="nav-link"
-                                        href="{{ route('carrinho.index') }}">{{ __('CARRINHO') }}</a></b>
+                                <b><a class="nav-link" href="{{ route('carrinho.index') }}">{{ __('CARRINHO') }}</a></b>
                             </li>
                         @endauth
                     </ul>
-
 
                     <!-- Right Side Of Navbar -->
 
@@ -76,21 +87,25 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a class="nav-link dropdown-toggle" role="button" type="button" id="navbarDropdown"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{ Auth::user()->name }}
                                 </a>
-
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('cliente.perfil') }}">
-                                        {{ __('Perfil') }}
+                                    @if (Auth::user()->isCliente())
+                                        <a class="dropdown-item" href="{{ route('cliente.perfil') }}">
+                                            {{ __('Perfil') }}
+                                        </a>
+                                    @endif
+                                    <a class="dropdown-item" href="{{ route('password') }}">
+                                        Alterar Senha
                                     </a>
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
@@ -101,11 +116,10 @@
                 </div>
             </div>
         </nav>
-
         <main class="py-5">
             @yield('content')
         </main>
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-2 my-4 border-top">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center pt-3 my-2 border-top">
             <div class="col-md-4 d-flex align-items-center">
                 <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
                     <svg class="bi" width="30" height="24">
@@ -114,21 +128,6 @@
                 </a>
                 <span class="text-muted">© 2022 CineMagic, Inc</span>
             </div>
-
-            <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-                <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24"
-                            height="24">
-                            <use xlink:href="#twitter"></use>
-                        </svg></a></li>
-                <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24"
-                            height="24">
-                            <use xlink:href="#instagram"></use>
-                        </svg></a></li>
-                <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24"
-                            height="24">
-                            <use xlink:href="#facebook"></use>
-                        </svg></a></li>
-            </ul>
         </footer>
     </div>
 </body>

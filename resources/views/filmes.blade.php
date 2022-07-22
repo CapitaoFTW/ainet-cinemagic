@@ -1,6 +1,6 @@
-@extends('layout')
+@extends('layouts.app')
 
-@section('title', 'Filmes em Exibição')
+@section('title', config('app.name', 'CineMagic'))
 
 @section('content')
     <div class="container" style="padding-left: 1rem">
@@ -14,7 +14,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Pesquisar</span>
                                 </div>
-                                <input type="text" name="nome" value="{{ old('nome', $nome) }}"class="form-control"
+                                <input type="text" name="nome" value="{{ old('nome', $nome) }}" class="form-control"
                                     placeholder="Título ou Sumário">
                             </div>
                         </div>
@@ -23,11 +23,11 @@
                         <div class="form-group">
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <select class="custom-select" name="genero" id="inputGenero" aria-label="Genero">
-                                    <option value="" {{ '' == old('generos', $generos) ? 'selected' : '' }}>Todos os
+                                    <option value="" {{ '' === old('generos', $generos) ? 'selected' : '' }}>Todos os
                                         Géneros</option>
                                     @foreach ($generos as $genero_code => $nome)
                                         <option value={{ $genero_code }}
-                                            {{ $genero_code == old('genero', $genero) ? 'selected' : '' }}>
+                                            {{ $genero_code === old('genero', $genero) ? 'selected' : '' }}>
                                             {{ $nome }}
                                         </option>
                                     @endforeach
@@ -46,12 +46,12 @@
         <div class="row text-center justify-content-center">
             @foreach ($filmes as $filme)
                 <div class="col-md-4 text-center my-auto" style="padding-top: 3em">
-                    <div class="card card-block d-flex" style="align-content:stretch">
+                    <div class="card card-block d-flex" style="height: 35rem; width: 21.8rem; align-content:stretch">
                         @isset($filme->cartaz_url)
                             <img src="{{ asset('storage/cartazes/' . $filme->cartaz_url) }}" class="card-img-top"
-                                style="max-height: 10em, max-width: 1em" alt="Cartaz">
+                                style="height: 25rem; width: 21.8rem" alt="Cartaz">
                         @else
-                            <img src="{{ asset('storage/cartazes/343_62c771c155ed0.jpg') }}" class="card-img-top"
+                            <img src="{{ asset('img/default_cartaz.png') }}" class="card-img-top"
                                 style="max-height: 10em, max-width: 1em" alt="Cartaz">
                         @endisset
                         <div class="card-body align-items-center d-flex justify-content-center">
@@ -65,11 +65,10 @@
             @empty($filmes->items())
                 <div class="col-md-12 text-center my-auto" style="padding-top: 9em; padding-bottom: 9em">
                     <div class="card-body align-items-center d-flex justify-content-center">
-                        <h3 class="card-title">NÃO HÁ FILMES EM EXIBIÇÃO PARA O QUE DEFINIU</h3>
+                        <h3 class="card-title">NÃO HÁ FILMES EM EXIBIÇÃO PARA O QUE PESQUISOU</h3>
                     </div>
                 </div>
-            </div>
-        @endempty
-    </div>
+            @endempty
+        </div>
     </div>
 @endsection

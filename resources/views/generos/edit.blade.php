@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title','Alterar Género' )
 @section('content')
     <form method="POST" action="{{route('admin.generos.update', ['genero' => $genero]) }}" class="form-group">

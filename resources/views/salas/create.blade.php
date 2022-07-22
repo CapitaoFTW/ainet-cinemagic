@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title', 'Nova Sala' )
 @section('content')
     <form method="POST" action="{{route('admin.salas.store')}}" class="form-group">

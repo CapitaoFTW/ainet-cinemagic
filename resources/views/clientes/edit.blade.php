@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title','Alterar Cliente' )
 @section('content')
     <form method="POST" action="{{route('admin.clientes.update', ['cliente' => $cliente]) }}" class="form-group" enctype="multipart/form-data">

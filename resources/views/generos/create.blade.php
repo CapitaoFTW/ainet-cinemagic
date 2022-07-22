@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title', 'Novo Genero' )
 @section('content')
     <form method="POST" action="{{route('admin.generos.store')}}" class="form-group">

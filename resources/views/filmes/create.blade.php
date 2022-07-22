@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title', 'Novo Filme' )
 @section('content')
     <form method="POST" action="{{route('admin.filmes.store')}}" class="form-group">

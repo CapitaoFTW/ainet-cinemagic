@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sessao;
+use App\Models\Lugar;
 use App\Models\Bilhete;
 use Illuminate\Http\Request;
 
@@ -9,100 +11,62 @@ class CarrinhoController extends Controller
 {
     public function index()
     {
-        if (!session()->has('carrinho'))
-        return redirect()->route('bilhetes.index');
-
         return view('carrinho.index')
             ->with('pageTitle', 'Carrinho de Compras')
             ->with('carrinho', session('carrinho') ?? []);
     }
 
-    public function store_bilhete(Request $request, Bilhete $bilhete)
+    public function store_bilhete(Request $request, Sessao $sessao, Lugar $lugar)
     {
         $carrinho = $request->session()->get('carrinho', []);
-        $qtdTotal = session('qtdTotal', 0);
 
-        $qtd = ($carrinho[$bilhete->id]['qtd'] ?? 0) + 1;
+        // If a seat is already occupied, don't add it to the cart and redirect back with an error
+        if ($lugar->isOcupado($sessao->id))
+            return back()
+                ->with('alert-msg', 'Esse lugar já se encontra ocupado!')
+                ->with('alert-type', 'danger');
 
-        ++$qtdTotal;
-        session(['qtdTotal' => $qtdTotal]);
-
-        $carrinho[$bilhete->id] = [
-            'id' => $bilhete->id,
-            'qtd' => $qtd,
-            'nome' => $bilhete->nome,
-            'preco_un' => $bilhete->preco_un,
-            'subtotal' => $bilhete->preco_un * $qtd,
+        $carrinho[] = [
+            'id' => $sessao->id,
+            'filme' => $sessao->filme->titulo,
+            'data' => date('j F', strtotime($sessao->data)),
+            'hora' => date('H:i', strtotime($sessao->horario_inicio)),
+            'lugar_id' => $lugar->id,
+            'lugar' => $lugar->fila . $lugar->posicao,
+            'preco' => 8.35,
         ];
 
         $request->session()->put('carrinho', $carrinho);
 
         return back()
-            ->with('alert-msg', 'Foi adicionado o bilhete "' . $bilhete->nome . '" ao carrinho!')
+            ->with('alert-msg', 'Foi adicionado o bilhete ao carrinho!')
             ->with('alert-type', 'success');
     }
 
-    public function update_bilhete(Request $request, Bilhete $bilhete)
+    public function destroy_bilhete(Request $request, $row)
     {
         $carrinho = $request->session()->get('carrinho', []);
-        $qtdTotal = session('qtdTotal', 0);
 
-        $qtd = $carrinho[$bilhete->id]['qtd'] ?? 0;
-        $qtd += $request->quantidade;
-
-        if ($request->quantidade < 0) {
-            $msg = 'Foi removido ' . -$request->quantidade . ' bilhete "' . $bilhete->nome . '" ao carrinho!';
-            --$qtdTotal;
-        } elseif ($request->quantidade > 0) {
-            $msg = 'Foi adicionado ' . $request->quantidade . ' bilhete "' . $bilhete->nome . '" do carrinho!';
-            ++$qtdTotal;
-        }
-
-        session(['qtdTotal' => $qtdTotal]);
-
-        if ($qtd <= 0) {
-            unset($carrinho[$bilhete->id]);
-            $msg = 'Foi removido o bilhete "' . $bilhete->nome . '" do carrinho!';
-        } else {
-            $carrinho[$bilhete->id] = [
-                'id' => $bilhete->id,
-                'qtd' => $qtd,
-                'nome' => $bilhete->nome,
-                'preco_un' => $bilhete->preco_un,
-                'subtotal' => $bilhete->preco_un * $qtd,
-            ];
-        }
-
+        unset($carrinho[$row]);
         $request->session()->put('carrinho', $carrinho);
 
-        if (session()->get('carrinho') == [])
-            return redirect()->route('bilhetes.index')
-                ->with('alert-msg', $msg)
-                ->with('alert-type', 'success');
-
         return back()
-            ->with('alert-msg', $msg)
+            ->with('alert-msg', 'Foi removido um bilhete do carrinho!')
             ->with('alert-type', 'success');
     }
 
-    public function destroy_bilhete(Request $request, Bilhete $bilhete)
+    /**
+     * Limpar o carrinho
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy()
     {
-        $carrinho = $request->session()->get('carrinho', []);
-
-        $qtdTotal = session('qtdTotal', 0);
-        $qtdTotal -= $carrinho[$bilhete->id]['qtd'];
-        session(['qtdTotal' => $qtdTotal]);
-
-        unset($carrinho[$bilhete->id]);
-        $request->session()->put('carrinho', $carrinho);
-
-        if (session()->get('carrinho') == [])
-            return redirect()->route('bilhetes.index')
-                ->with('alert-msg', 'Foi removido o bilhete "' . $bilhete->nome . '" do carrinho!')
-                ->with('alert-type', 'success');
+        session()->get('carrinho', []);
+        session()->forget('carrinho');
 
         return back()
-            ->with('alert-msg', 'Foi removido o bilhete "' . $bilhete->nome . '" do carrinho!')
+            ->with('alert-msg', 'Todos os bilhetes do carrinho foram removidos!')
             ->with('alert-type', 'success');
     }
 }

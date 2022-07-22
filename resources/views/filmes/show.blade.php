@@ -1,6 +1,6 @@
-@extends('layout')
+@extends('layouts.app')
 
-@section('title', 'Filme')
+@section('title', $filme->titulo)
 
 @section('content')
 
@@ -51,7 +51,7 @@
                             <img src="{{ asset('storage/cartazes/' . $filme->cartaz_url) }}" style="height: 25rem"
                                 alt="Cartaz">
                         @else
-                            <img src="{{ asset('storage/cartazes/343_62c771c155ed0.jpg') }}" style="height: 25rem"
+                            <img src="{{ asset('img/default_cartaz.png') }}" style="height: 25rem"
                                 alt="Cartaz">
                         @endisset
                     </div>
@@ -98,14 +98,16 @@
                     </thead>
                     <tbody>
                         @foreach ($filme->sessoes as $sessao)
-                            @if ($sessao->data >= date('Y-m-d') && $sessao->horario_inicio >= date('H:i:s'))
+                            @if (($sessao->data == now()->format('Y-m-d') && $sessao->horario_inicio >= now()->subMinutes(5)->format('H:i:s')) || $sessao->data > now()->format('Y-m-d'))
                                 <tr>
                                     <td>{{ date('H:i', strtotime($sessao->horario_inicio)) }}</td>
                                     <td>{{ date('j F', strtotime($sessao->data)) }}</td>
                                     <td>{{ $sessao->sala->nome }}</td>
-                                    <td>Esgotada</td>
+                                    <td>{{ count($sessao->bilhetes) == count($sessao->sala->lugares) ? 'Esgotada' : count($sessao->sala->lugares) - count($sessao->bilhetes) . ' lugares livres' }}
+                                    </td>
                                     <td class="text-right" style="width:10rem;">
-                                        <a href="" class="btn btn-success">Comprar Bilhete</a>
+                                        <a href="{{ route('sessao.comprar_bilhete', $sessao) }}"
+                                            class="btn btn-success">Comprar Bilhete</a>
                                     </td>
                                 </tr>
                             @endif

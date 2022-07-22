@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title', 'Salas')
 @section('content')
     <div class="row mb-3">

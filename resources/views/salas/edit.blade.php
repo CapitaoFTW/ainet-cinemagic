@@ -1,4 +1,4 @@
-@extends('layout_admin')
+@extends('layouts.painel')
 @section('title','Alterar Sala' )
 @section('content')
     <form method="POST" action="{{route('admin.salas.update', ['sala' => $sala]) }}" class="form-group">
